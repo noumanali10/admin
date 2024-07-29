@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function Building() {
     const [buildingData, setBuildingData] = useState({
@@ -16,10 +16,31 @@ export default function Building() {
     });
 
     const navigate = useNavigate();
+    const { id } = useParams();
 
     useEffect(() => {
-        // Any setup or initial data fetching can be done here
-    }, []);
+        if (id) {
+            const fetchBuildingData = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:5000/buildings/${id}`);
+                    setBuildingData({
+                        ID: response.data.ID,
+                        name: response.data.name,
+                        Description: response.data.Description,
+                        coordinates: {
+                            lat: response.data.coordinates.lat,
+                            lng: response.data.coordinates.lng,
+                        },
+                        File: null // File cannot be pre-filled
+                    });
+                } catch (error) {
+                    console.error('Error fetching building data:', error);
+                }
+            };
+
+            fetchBuildingData();
+        }
+    }, [id]);
 
     const handleChange = (event) => {
         const { name, value, files } = event.target;
@@ -52,16 +73,29 @@ export default function Building() {
         formData.append('Description', buildingData.Description);
         formData.append('lat', buildingData.coordinates.lat);
         formData.append('lng', buildingData.coordinates.lng);
-        formData.append('File', buildingData.File);
+        if (buildingData.File) {
+            formData.append('File', buildingData.File);
+        }
 
         try {
-            const response = await axios.post('http://localhost:5000/buildings', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-            console.log('Form submitted successfully:', response.data);
-            navigate('/');
+            if (id) {
+                // Update existing building
+                const response = await axios.put(`http://localhost:5000/buildings/${id}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                console.log('Building updated successfully:', response.data);
+            } else {
+                // Create new building
+                const response = await axios.post('http://localhost:5000/buildings', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                console.log('Building created successfully:', response.data);
+            }
+            navigate('/admin');
         } catch (error) {
             console.error('There was an error submitting the form!', error);
         }
@@ -72,7 +106,7 @@ export default function Building() {
             <Navbar />
             <h1 className="text-2xl font-semibold mt-4 pl-2">Building</h1>
             <div className="flex items-center justify-center mt-5 bg-gray-100 border border-red-700">
-                <form className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm" onSubmit={handleSubmit} enctype="multipart/form-data">
+                <form className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm" onSubmit={handleSubmit} encType="multipart/form-data">
                     <div className="mb-4">
                         <label htmlFor="ID" className="block text-gray-700 font-bold mb-2">Building ID</label>
                         <input type="text" id="ID" name="ID" value={buildingData.ID} onChange={handleChange} placeholder="B123" className="w-full px-3 py-2 border rounded-md" />

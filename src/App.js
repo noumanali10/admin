@@ -1,20 +1,38 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import './App.css';
-import Home from './Components/Home';
- // Example additional page
-import Building from '../src/Components/building';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import "./App.css";
+import Home from "./Components/Home";
+import Login from "../src/Components/Autherization/Signin";
+// Example additional page
+import Building from "../src/Components/building";
+import { AuthProvider } from "./MiddleWare/AuthContext";
+import ProtectedRoute from "./MiddleWare/ProtectedRoute";
+import Confirmation from "./Services/Confirmation";
+
 
 function App() {
   return (
-    <Router>
-      <div>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/buildings" element={<Building />} /> 
-        </Routes>
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <div>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route
+              path="/admin"
+              element={<ProtectedRoute element={<Home />} />}
+            />
+            <Route
+              path="/buildings"
+              element={<ProtectedRoute element={<Building />} />}
+            />
+             <Route
+              path="/Coms"
+              element={<ProtectedRoute element={<Confirmation/>} />}
+            />
+          </Routes>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 

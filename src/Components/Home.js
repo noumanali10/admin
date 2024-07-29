@@ -1,51 +1,64 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import Navbar from "./Navbar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../MiddleWare/AuthContext";
 
 export default function Home() {
+  const { isAuthenticated, loading } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [buildings, setBuildings] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingData, setLoadingData] = useState(true);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   useEffect(() => {
-    const fetchBuildings = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/buildings");
-        setBuildings(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
+    if (!loading) {
+      if (!isAuthenticated) {
+        navigate('/');
+        return;
       }
-    };
 
-    fetchBuildings();
-  }, []);
+      const fetchBuildings = async () => {
+        try {
+          const response = await axios.get("http://localhost:5000/buildings");
+          setBuildings(response.data);
+          setLoadingData(false);
+        } catch (err) {
+          setError(err.message);
+          setLoadingData(false);
+        }
+      };
+
+      fetchBuildings();
+    }
+  }, [isAuthenticated, loading, navigate]);
 
   const handleSearch = async () => {
     try {
-      setLoading(true);
-      const response = await axios.get(`http://localhost:5000/buildings/search/${searchQuery}`);
+      setLoadingData(true);
+      const response = await axios.get(
+        `http://localhost:5000/buildings/search/${searchQuery}`
+      );
       setBuildings(response.data);
-      setLoading(false);
+      setLoadingData(false);
     } catch (err) {
       setError(err.message);
-      setLoading(false);
+      setLoadingData(false);
     }
   };
 
   const onClickDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/buildings/${id}`);
-      setBuildings(buildings.filter(building => building._id !== id));
+      setBuildings(buildings.filter((building) => building._id !== id));
     } catch (err) {
       console.error(err.message);
     }
   };
 
-  if (loading) {
+  if (loading || loadingData) {
     return <div>Loading...</div>;
   }
 
@@ -88,7 +101,9 @@ export default function Home() {
                 <tr key={building._id}>
                   <td className="py-2 px-4 border-b">{building.ID}</td>
                   <td className="py-2 px-4 border-b">{building.name}</td>
-                  <td className="py-2 px-4 border-b">{building.File}</td>
+                  <td className="py-2 px-4 border-b">
+                    <Link to={`/files/${building.File}`}>{building.File}</Link>
+                  </td>
                   <td className="py-2 px-4 border-b">{`Lat: ${building.coordinates.lat}, Lng: ${building.coordinates.lng}`}</td>
                   <td className="py-2 px-4 border-b">{building.Description}</td>
                   <td className="py-2 px-4 border-b">
@@ -97,7 +112,7 @@ export default function Home() {
                     </button>
                     <button
                       className="text-red-500"
-                      onClick={() => onClickDelete(building._id)}
+                      onClick={() => setConfirmDelete(building._id)}
                     >
                       <i className="fa-solid fa-trash"></i>
                     </button>
@@ -117,6 +132,31 @@ export default function Home() {
           Create New Project
         </Link>
       </span>
+
+      {confirmDelete && (
+        <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-4 rounded-lg shadow-lg">
+            <h2 className="text-xl font-semibold mb-4">Are you sure?</h2>
+            <div className="flex justify-between">
+              <button
+                onClick={() => setConfirmDelete(false)}
+                className="bg-red-500 text-white px-4 py-2 rounded-md"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  onClickDelete(confirmDelete);
+                  setConfirmDelete(null);
+                }}
+                className="bg-green-500 text-white px-4 py-2 rounded-md ml-4"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
