@@ -7,7 +7,7 @@ import Login from "../src/Components/Autherization/Signin";
 import Building from "../src/Components/Building";
 import { AuthProvider } from "./MiddleWare/AuthContext";
 import ProtectedRoute from "./MiddleWare/ProtectedRoute";
-import Confirmation from "./Services/Confirmation";
+
 
 
 function App() {
@@ -24,10 +24,6 @@ function App() {
             <Route
               path="/buildings"
               element={<ProtectedRoute element={<Building />} />}
-            />
-             <Route
-              path="/Coms"
-              element={<ProtectedRoute element={<Confirmation/>} />}
             />
           </Routes>
         </div>

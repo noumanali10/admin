@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../MiddleWare/AuthContext'; // Adjusted path
 import axios from 'axios';
-
+// Confirmation
 export default function Signin() {
     const navigate = useNavigate();
     const { setIsAuthenticated } = useContext(AuthContext);
