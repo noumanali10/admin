@@ -21,7 +21,7 @@ export default function Signin() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/user/login', userData);
+            const response = await axios.post('https://backend-two-mu-64.vercel.app/user/login', userData);
             const data = response.data;
             if (response.status === 200) {
                 localStorage.setItem('token', data.token);

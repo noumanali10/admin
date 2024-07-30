@@ -22,7 +22,7 @@ export default function Building() {
         if (id) {
             const fetchBuildingData = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:5000/buildings/${id}`);
+                    const response = await axios.get(`https://backend-two-mu-64.vercel.app/buildings/${id}`);
                     setBuildingData({
                         ID: response.data.ID,
                         name: response.data.name,
@@ -80,7 +80,7 @@ export default function Building() {
         try {
             if (id) {
                 // Update existing building
-                const response = await axios.put(`http://localhost:5000/buildings/${id}`, formData, {
+                const response = await axios.put(`https://backend-two-mu-64.vercel.app/buildings/${id}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -88,7 +88,7 @@ export default function Building() {
                 console.log('Building updated successfully:', response.data);
             } else {
                 // Create new building
-                const response = await axios.post('http://localhost:5000/buildings', formData, {
+                const response = await axios.post('https://backend-two-mu-64.vercel.app/buildings', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }

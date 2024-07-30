@@ -22,8 +22,10 @@ export default function Home() {
 
       const fetchBuildings = async () => {
         try {
-          const response = await axios.get("http://localhost:5000/buildings");
-          setBuildings(response.data);
+          console.log("Fetching buildings...");
+          const response = await axios.get("https://backend-two-mu-64.vercel.app/buildings");
+          console.log("API Response:", response.data);
+          setBuildings(Array.isArray(response.data) ? response.data : []);
           setLoadingData(false);
         } catch (err) {
           setError(err.message);
@@ -39,9 +41,10 @@ export default function Home() {
     try {
       setLoadingData(true);
       const response = await axios.get(
-        `http://localhost:5000/buildings/search/${searchQuery}`
+        `https://backend-two-mu-64.vercel.app/buildings/search/${searchQuery}`
       );
-      setBuildings(response.data);
+      console.log("Search API Response:", response.data);
+      setBuildings(Array.isArray(response.data) ? response.data : []);
       setLoadingData(false);
     } catch (err) {
       setError(err.message);
@@ -51,7 +54,7 @@ export default function Home() {
 
   const onClickDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/buildings/${id}`);
+      await axios.delete(`https://backend-two-mu-64.vercel.app/buildings/${id}`);
       setBuildings(buildings.filter((building) => building._id !== id));
     } catch (err) {
       console.error(err.message);
