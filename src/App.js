@@ -4,7 +4,7 @@ import "./App.css";
 import Home from "./Components/Home";
 import Login from "./Components/Autherization/Signin";
 // Example additional page
-import Building from "./Components/Building";
+import BuildingN from "./Components/Building";
 import { AuthProvider } from "./MiddleWare/AuthContext";
 import ProtectedRoute from "./MiddleWare/ProtectedRoute";
 
@@ -23,7 +23,7 @@ function App() {
             />
             <Route
               path="/buildings"
-              element={<ProtectedRoute element={<Building />} />}
+              element={<ProtectedRoute element={<BuildingN />} />}
             />
           </Routes>
         </div>
