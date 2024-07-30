@@ -4,7 +4,7 @@ import "./App.css";
 import Home from "./Components/Home";
 import Login from "./Components/Autherization/Signin";
 // Example additional page
-import BuildingN from "./Components/Building";
+import BuildingN from "./Components/building";
 import { AuthProvider } from "./MiddleWare/AuthContext";
 import ProtectedRoute from "./MiddleWare/ProtectedRoute";
 
