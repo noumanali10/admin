@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Home from "./Components/Home";
-import Login from "../src/Components/Autherization/Signin";
+import Login from "./Components/Autherization/Signin";
 // Example additional page
 import Building from "./Components/Building";
 import { AuthProvider } from "./MiddleWare/AuthContext";
