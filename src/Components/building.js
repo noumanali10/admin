@@ -12,7 +12,7 @@ export default function Building() {
             lat: '',
             lng: '',
         },
-        File: null
+        fileUrl: '' // Updated to fileUrl
     });
 
     const navigate = useNavigate();
@@ -31,7 +31,7 @@ export default function Building() {
                             lat: response.data.coordinates.lat,
                             lng: response.data.coordinates.lng,
                         },
-                        File: null // File cannot be pre-filled
+                        fileUrl: response.data.fileUrl // Assuming the backend returns a file URL
                     });
                 } catch (error) {
                     console.error('Error fetching building data:', error);
@@ -43,7 +43,7 @@ export default function Building() {
     }, [id]);
 
     const handleChange = (event) => {
-        const { name, value, files } = event.target;
+        const { name, value } = event.target;
         if (name === 'lat' || name === 'lng') {
             setBuildingData(prevState => ({
                 ...prevState,
@@ -51,11 +51,6 @@ export default function Building() {
                     ...prevState.coordinates,
                     [name]: value
                 }
-            }));
-        } else if (name === 'File') {
-            setBuildingData(prevState => ({
-                ...prevState,
-                File: files[0]
             }));
         } else {
             setBuildingData(prevState => ({
@@ -73,9 +68,7 @@ export default function Building() {
         formData.append('Description', buildingData.Description);
         formData.append('lat', buildingData.coordinates.lat);
         formData.append('lng', buildingData.coordinates.lng);
-        if (buildingData.File) {
-            formData.append('File', buildingData.File);
-        }
+        formData.append('fileUrl', buildingData.fileUrl); // Added fileUrl
 
         try {
             if (id) {
@@ -124,8 +117,8 @@ export default function Building() {
                         <input type="text" id="lng" name="lng" value={buildingData.coordinates.lng} onChange={handleChange} placeholder="122.4194° W" className="w-full px-3 py-2 border rounded-md" />
                     </div>
                     <div className="mb-4">
-                        <label htmlFor="File" className="block text-gray-700 font-bold mb-2">File</label>
-                        <input type="file" id="File" name="File" onChange={handleChange} className="w-full px-3 py-2 border rounded-md" />
+                        <label htmlFor="fileUrl" className="block text-gray-700 font-bold mb-2">File URL</label>
+                        <input type="text" id="fileUrl" name="fileUrl" value={buildingData.fileUrl} onChange={handleChange} placeholder="https://example.com/file.jpg" className="w-full px-3 py-2 border rounded-md" />
                     </div>
                     <div className="mb-4">
                         <label htmlFor="Description" className="block text-gray-700 font-bold mb-2">Description</label>
