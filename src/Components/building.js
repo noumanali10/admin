@@ -89,7 +89,7 @@ export default function Building() {
             console.log('Building updated successfully:', response.data);
             } else {
             // Create new building
-            const response = await axios.post('http://localhost:5000/buildings', buildingData, {
+            const response = await axios.post('https://backend-two-mu-64.vercel.app/buildings', buildingData, {
                 headers: {
                 'Content-Type': 'application/json'
                 }
