@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../MiddleWare/AuthContext'; // Adjusted path
 import axios from 'axios';
 // Confirmation
@@ -21,7 +21,7 @@ export default function Signin() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('https://backend-two-mu-64.vercel.app/user/login', userData);
+            const response = await axios.post('https://backend-two-mu-64.vercel.app/users/login', userData);
             const data = response.data;
             if (response.status === 200) {
                 localStorage.setItem('token', data.token);
@@ -43,13 +43,7 @@ export default function Signin() {
                 <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900">
                     Sign in to your account
                 </h2>
-                <p className="mt-2 text-center text-sm leading-5 text-blue-500 max-w">
-                    Or
-                    <Link to="/signup"
-                        className="font-medium text-blue-500 hover:text-blue-500 focus:outline-none focus:underline transition ease-in-out duration-150">
-                        create a new account
-                    </Link>
-                </p>
+               
             </div>
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">

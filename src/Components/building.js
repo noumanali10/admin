@@ -12,6 +12,7 @@ export default function Building() {
             lat: '',
             lng: '',
         },
+        file: null, // Updated to handle file input
         fileUrl: '' // Updated to fileUrl
     });
 
@@ -31,6 +32,7 @@ export default function Building() {
                             lat: response.data.coordinates.lat,
                             lng: response.data.coordinates.lng,
                         },
+                        file: null, // Assuming you don't fetch the file, as it's a URL
                         fileUrl: response.data.fileUrl // Assuming the backend returns a file URL
                     });
                 } catch (error) {
@@ -43,7 +45,7 @@ export default function Building() {
     }, [id]);
 
     const handleChange = (event) => {
-        const { name, value } = event.target;
+        const { name, value, files } = event.target;
         if (name === 'lat' || name === 'lng') {
             setBuildingData(prevState => ({
                 ...prevState,
@@ -51,6 +53,11 @@ export default function Building() {
                     ...prevState.coordinates,
                     [name]: value
                 }
+            }));
+        } else if (name === 'file') {
+            setBuildingData(prevState => ({
+                ...prevState,
+                file: files[0]
             }));
         } else {
             setBuildingData(prevState => ({
@@ -68,25 +75,26 @@ export default function Building() {
         formData.append('Description', buildingData.Description);
         formData.append('lat', buildingData.coordinates.lat);
         formData.append('lng', buildingData.coordinates.lng);
-        formData.append('fileUrl', buildingData.fileUrl); // Added fileUrl
+        formData.append('file', buildingData.file); // Use file instead of fileUrl
 
         try {
+            console.log('Building data:', buildingData);
             if (id) {
-                // Update existing building
-                const response = await axios.put(`https://backend-two-mu-64.vercel.app/buildings/${id}`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-                console.log('Building updated successfully:', response.data);
+            // Update existing building
+            const response = await axios.put(`https://backend-two-mu-64.vercel.app/buildings/${id}`, buildingData, {
+                headers: {
+                'Content-Type': 'application/json'
+                }
+            });
+            console.log('Building updated successfully:', response.data);
             } else {
-                // Create new building
-                const response = await axios.post('https://backend-two-mu-64.vercel.app/buildings', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-                console.log('Building created successfully:', response.data);
+            // Create new building
+            const response = await axios.post('http://localhost:5000/buildings', buildingData, {
+                headers: {
+                'Content-Type': 'application/json'
+                }
+            });
+            console.log('Building created successfully:', response.data);
             }
             navigate('/admin');
         } catch (error) {
